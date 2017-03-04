@@ -113,44 +113,43 @@ function processPriceRequest(reqParams) {
 restService.post('/webhook', function (req, res) {
     // console.log(JSON.stringify(req.body));
     // res.send("hello");
-
-    req.body = {
-        "id": "80bc8c45-f0dc-494c-82b7-7f062a3d5314",
-        "timestamp": "2017-03-03T14:23:57.452Z",
-        "lang": "en",
-        "result": {
-            "source": "agent",
-            "resolvedQuery": "what is price of reliance?",
-            "action": "getStockPrice",
-            "actionIncomplete": false,
-            "parameters": {
-                "stock": "reliance"
-            },
-            "contexts": [],
-            "metadata": {
-                "intentId": "a403c854-35a7-481e-a848-1658389282c7",
-                "webhookUsed": "false",
-                "webhookForSlotFillingUsed": "false",
-                "intentName": "Action: Get Stock price"
-            },
-            "fulfillment": {
-                "speech": "Getting price of reliance...",
-                "messages": [
-                    {
-                        "type": 0,
-                        "speech": "Getting price of reliance..."
-                    }
-                ]
-            },
-            "score": 1
-        },
-        "status": {
-            "code": 200,
-            "errorType": "success"
-        },
-        "sessionId": "6e9a7a1a-09f1-4214-a561-3b4cbb9a13dd"
-    };
-
+    //
+    // req.body = {
+    //     "id": "80bc8c45-f0dc-494c-82b7-7f062a3d5314",
+    //     "timestamp": "2017-03-03T14:23:57.452Z",
+    //     "lang": "en",
+    //     "result": {
+    //         "source": "agent",
+    //         "resolvedQuery": "what is price of reliance?",
+    //         "action": "getStockPrice",
+    //         "actionIncomplete": false,
+    //         "parameters": {
+    //             "stock": "reliance"
+    //         },
+    //         "contexts": [],
+    //         "metadata": {
+    //             "intentId": "a403c854-35a7-481e-a848-1658389282c7",
+    //             "webhookUsed": "false",
+    //             "webhookForSlotFillingUsed": "false",
+    //             "intentName": "Action: Get Stock price"
+    //         },
+    //         "fulfillment": {
+    //             "speech": "Getting price of reliance...",
+    //             "messages": [
+    //                 {
+    //                     "type": 0,
+    //                     "speech": "Getting price of reliance..."
+    //                 }
+    //             ]
+    //         },
+    //         "score": 1
+    //     },
+    //     "status": {
+    //         "code": 200,
+    //         "errorType": "success"
+    //     },
+    //     "sessionId": "6e9a7a1a-09f1-4214-a561-3b4cbb9a13dd"
+    // };
 
     var speech = "Cannot process without stock symbol.";
 
