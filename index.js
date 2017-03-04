@@ -114,7 +114,6 @@ function processPriceRequest(reqParams) {
             try {
 
                 // Replace body
-
                 var jsonText = body.substr(3);
                 jsonText = JSON.parse(jsonText)[0];
 
@@ -171,7 +170,7 @@ function processPriceRequest(reqParams) {
 }
 
 
-restService.all('/webhook', function (req, res) {
+restService.post('/webhook', function (req, res) {
     // console.log(JSON.stringify(req.body));
     // res.send("hello");
 
