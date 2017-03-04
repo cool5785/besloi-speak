@@ -75,12 +75,12 @@ function getStockDetailMessage(stockDetail) {
     var change= stockDetail["c"].indexOf("+") > -1 ? "↑ " + stockDetail["c"] : "↓ " + stockDetail["c"];
 
     var message = "Detail of " + stockDetail["name"] + ": "
-        + "\nCurrent: ₹"+ stockDetail["l_cur"].replace("₹", "") + change + "(" + stockDetail["cp"] + "%)"
+        + "\n₹"+ stockDetail["l_cur"].replace("₹", "") + change + "(" + stockDetail["cp"] + "%)"
         + "\nOpen: "+stockDetail["op"]
-        + ", High: " + stockDetail["hi"]
-        + ", Low: "+ stockDetail["lo"]
-        + ", Close: "+ stockDetail["l_cur"].replace("₹", "")
-        + ", Volume: "+ (stockDetail["vo"] || stockDetail["avvo"])
+        + "\nHigh: " + stockDetail["hi"]
+        + "\nLow: "+ stockDetail["lo"]
+        + "\nClose: "+ stockDetail["l_cur"].replace("₹", "")
+        + "\nVolume: "+ (stockDetail["vo"] || stockDetail["avvo"])
         + "\n52week High: "+ stockDetail["hi52"]
         + "\n52week Low: "+ stockDetail["lo52"];
 
@@ -99,7 +99,6 @@ function getStockName(reqStockName) {
                         reqStockName = matches[0]["t"];
                         xch = matches[0]["e"];
                     }
-
                 }
                 defer.resolve({symb: reqStockName, xch: xch});
             });
@@ -107,65 +106,6 @@ function getStockName(reqStockName) {
 }
 
 function processPriceRequest(reqParams) {
-    var speech = "Cannot get price of stock.";
-    request('https://www.google.com/finance/info?q=' + stockQuery, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-
-            try {
-
-                // Replace body
-                var jsonText = body.substr(3);
-                jsonText = JSON.parse(jsonText)[0];
-
-                var stockName = jsonText["t"];
-
-
-                speech = "Price of " + stockName + " is ₹ " + jsonText["l_cur"].replace("&#8377;", "") + ". ";
-
-                if(req.body.result.action === "getStockPrice") {
-                    return res.send({
-                        speech: speech,
-                        displayText: speech,
-                        source: 'besloi-speak'
-                    });
-                } else if(req.body.result.action === "getStockChart") {
-                    var chartURL = "https://www.google.com/finance/getchart?q=" + stockName;
-                    speech = "Chart: " + chartURL;
-                    return res.send({
-                        speech: speech,
-                        displayText: speech,
-                        source: 'besloi-speak',
-                        data: {
-                            "facebook": {
-                                "attachment": {
-                                    "type": "image",
-                                    "payload": {
-                                        "url": chartURL
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-
-            } catch (err) {
-
-                return res.send({
-                    speech: speech,
-                    displayText: speech,
-                    source: 'besloi-speak'
-                });
-            }
-
-        }else{
-            return res.send({
-                speech: speech,
-                displayText: speech,
-                source: 'besloi-speak'
-            });
-        }
-    }); // End of require
-
 
 }
 
