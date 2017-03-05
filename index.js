@@ -63,6 +63,8 @@ function getStockDetail(stockData) {
                 var jsonText = body.substr(3);
                 jsonText = JSON.parse(jsonText)[0];
                 defer.resolve(jsonText);
+            } else {
+                defer.reject(error);
             }
         } catch (err) {
             defer.reject(err);
@@ -124,7 +126,7 @@ restService.post('/webhook', function (req, res) {
     //         "action": "getStockPrice",
     //         "actionIncomplete": false,
     //         "parameters": {
-    //             "stock": "reliance"
+    //             "stock": "suryaprakash"
     //         },
     //         "contexts": [],
     //         "metadata": {
@@ -151,6 +153,7 @@ restService.post('/webhook', function (req, res) {
     //     "sessionId": "6e9a7a1a-09f1-4214-a561-3b4cbb9a13dd"
     // };
 
+    console.log("Start.");
     var speech = "Cannot process without stock symbol.";
 
     if(req.body && req.body.result && req.body.result.parameters && req.body.result.parameters.stock) {
@@ -158,12 +161,16 @@ restService.post('/webhook', function (req, res) {
         var reqStockName = req.body.result.parameters.stock;
 
         if(req.body.result.action === "getStockPrice") {
+            console.log(1);
             // Get stock details
             speech = "Cannot get details of "+ reqStockName +".";
 
             getStockName(reqStockName).then(function (data) {
+                console.log(1.1);
                 getStockDetail(data).then(function (stockDetail) {
                     speech = getStockDetailMessage(stockDetail);
+
+                    console.log("1.1.1");
 
                     return res.send({
                         speech: speech,
@@ -172,7 +179,7 @@ restService.post('/webhook', function (req, res) {
                     });
                 }, function (err) {
                     // console.log("Error in getting details");
-
+                    console.log("1.1.2");
                     return res.send({
                         speech: speech,
                         displayText: speech,
@@ -180,13 +187,18 @@ restService.post('/webhook', function (req, res) {
                     });
                 });
             }, function (err) {
+                console.log(1.2);
                 return res.send({
                     speech: speech,
                     displayText: speech,
                     source: 'besloi-speak'
                 });
             });
+
+
+
         } else if(req.body.result.action === "getStockChart") {
+            console.log(2);
             var chartURL = "https://www.google.com/finance/getchart?q=" + reqStockName;
             speech = "Chart: " + chartURL;
             return res.send({
@@ -205,6 +217,7 @@ restService.post('/webhook', function (req, res) {
                 }
             });
         } else {
+            console.log(3);
             return res.send({
                 speech: speech + ".!",
                 displayText: speech + ".!",
@@ -213,6 +226,7 @@ restService.post('/webhook', function (req, res) {
         }
 
     } else {
+        console.log(4);
         return res.send({
             speech: speech + "..!",
             displayText: speech + "..!",
@@ -220,6 +234,7 @@ restService.post('/webhook', function (req, res) {
         });
     }
 
+    console.log(5);
 
 
     // console.log(reqStockName);
