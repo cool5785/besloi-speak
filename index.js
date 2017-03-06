@@ -108,7 +108,7 @@ function getStockName(reqStockName) {
 }
 
 function getStockChartURL(stockName, interval, period) {
-    interval = "&i=" + (interval || 60);
+    interval = "&i=" + (interval || "60");
     period = "&p=" + (period || "1d");
 
     return  "https://www.google.com/finance/getchart?q=" + stockName + interval + period;
@@ -167,32 +167,59 @@ restService.post('/webhook', function (req, res) {
 
         var reqStockName = req.body.result.parameters.stock;
 
-        if(req.body.result.action === "getStockPrice") {
             console.log(1);
             // Get stock details
             speech = "Cannot get details of "+ reqStockName +".";
 
             getStockName(reqStockName).then(function (data) {
-                console.log(1.1);
-                getStockDetail(data).then(function (stockDetail) {
-                    speech = getStockDetailMessage(stockDetail);
 
-                    console.log("1.1.1");
+                speech = "Cannot get details of "+ data.symb +".";
 
+                if(req.body.result.action === "getStockPrice") {
+                    getStockDetail(data).then(function (stockDetail) {
+                        speech = getStockDetailMessage(stockDetail);
+                        console.log("1.1.1");
+
+                        return res.send({
+                            speech: speech,
+                            displayText: speech,
+                            source: 'besloi-speak'
+                        });
+                    }, function (err) {
+                        // console.log("Error in getting details");
+                        console.log("1.1.2");
+                        return res.send({
+                            speech: speech,
+                            displayText: speech,
+                            source: 'besloi-speak'
+                        });
+                    });
+                } else if(req.body.result.action === "getStockChart") {
+                    console.log(2);
+                    var chartURL = getStockChartURL(data.symb);
+                    speech = "Chart: " + chartURL;
+                    return res.send({
+                        speech: speech,
+                        displayText: speech,
+                        source: 'besloi-speak',
+                        data: {
+                            "facebook": {
+                                "attachment": {
+                                    "type": "image",
+                                    "payload": {
+                                        "url": chartURL
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
                     return res.send({
                         speech: speech,
                         displayText: speech,
                         source: 'besloi-speak'
                     });
-                }, function (err) {
-                    // console.log("Error in getting details");
-                    console.log("1.1.2");
-                    return res.send({
-                        speech: speech,
-                        displayText: speech,
-                        source: 'besloi-speak'
-                    });
-                });
+                }
             }, function (err) {
                 console.log(1.2);
                 return res.send({
@@ -202,35 +229,6 @@ restService.post('/webhook', function (req, res) {
                 });
             });
 
-
-
-        } else if(req.body.result.action === "getStockChart") {
-            console.log(2);
-            var chartURL = getStockChartURL(reqStockName);
-            speech = "Chart: " + chartURL;
-            return res.send({
-                speech: speech,
-                displayText: speech,
-                source: 'besloi-speak',
-                data: {
-                    "facebook": {
-                        "attachment": {
-                            "type": "image",
-                            "payload": {
-                                "url": chartURL
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            console.log(3);
-            return res.send({
-                speech: speech + ".!",
-                displayText: speech + ".!",
-                source: 'besloi-speak'
-            });
-        }
 
     } else {
         console.log(4);
