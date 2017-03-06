@@ -107,6 +107,13 @@ function getStockName(reqStockName) {
             return defer.promise;
 }
 
+function getStockChartURL(stockName, interval, period) {
+    interval = "&i=" + (interval || 60);
+    period = "&p=" + (period || "1d");
+
+    return  "https://www.google.com/finance/getchart?q=" + stockName + interval + period;
+}
+
 function processPriceRequest(reqParams) {
 
 }
@@ -199,7 +206,7 @@ restService.post('/webhook', function (req, res) {
 
         } else if(req.body.result.action === "getStockChart") {
             console.log(2);
-            var chartURL = "https://www.google.com/finance/getchart?q=" + reqStockName;
+            var chartURL = getStockChartURL(reqStockName);
             speech = "Chart: " + chartURL;
             return res.send({
                 speech: speech,
